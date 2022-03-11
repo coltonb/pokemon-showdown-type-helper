@@ -18,7 +18,7 @@
     "build": "webpack --config webpack.prod.js",
     "test": "jest"
   },
-  "devDependencies": {
+  "dependencies": {
     "@types/jest": "^27.4.1",
     "axios": "^0.26.1",
     "clean-webpack-plugin": "^4.0.0",

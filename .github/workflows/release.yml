@@ -12,13 +12,31 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+      - name: Install dependencies
+        run: npm ci
+      - run: npm test
+      - run: npm run build
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+      - name: Zip distribution
+        id: zip_dist
+        run: pushd dist; zip -r dist.zip *; popd; echo '::set-output name=zip_name::./dist/dist.zip'
+      - name: Upload Unpacked Extension
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.zip_dist.outputs.zip_name }}
+          asset_name: pokemon-showdown-type-helper.zip
+          asset_content_type: application/zip
