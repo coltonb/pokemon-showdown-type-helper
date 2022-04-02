@@ -1,19 +1,21 @@
 on:
-  push:
+  push: 
     tags:
       - "v*"
 
-name: Create Release
+name: Test and Build
 
 jobs:
-  build:
-    name: Create Release
+  test_and_build:
+    name: Test and Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
+        with:
+          cache: 'npm'
       - name: Install dependencies
         run: npm ci
       - run: npm test
@@ -25,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: ${{ github.ref }}
           draft: false
           prerelease: false
       - name: Zip distribution
