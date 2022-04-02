@@ -53,7 +53,7 @@ export namespace PokemonShowdown {
    */
   export async function modifyTooltip(
     pokeAPIClient: PokeAPI.PokeAPIClient,
-    tooltipElement: Element
+    tooltipElement: HTMLElement
   ) {
     const headerNode = tooltipElement.querySelector("h2");
 
@@ -89,5 +89,9 @@ export namespace PokemonShowdown {
         headerNode.nextSibling
       );
     }
+
+    // Remove CSS top property to force tooltips to always render below the mouse
+    // This prevents the added types from causing the tooltip to go offscreen.
+    tooltipElement.parentElement!.parentElement!.style.top = "";
   }
 }

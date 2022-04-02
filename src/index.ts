@@ -18,7 +18,7 @@ const observer = new MutationObserver((mutations) => {
 
       const tooltipElement = document.querySelector(
         PokemonShowdown.POKEMON_TOOLTIP_SELECTOR
-      );
+      ) as HTMLElement;
 
       if (tooltipElement === null) continue;
 
