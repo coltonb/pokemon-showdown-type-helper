@@ -1,7 +1,7 @@
 import { PokeAPI } from "./pokeAPI";
 import { PokemonShowdown } from "./pokemonShowdown";
 
-const pokeAPIClient = new PokeAPI.PokeAPIClient();
+const pokemonShowdown = new PokemonShowdown(new PokeAPI.PokeAPIClient())
 
 /**
  * Watches for new tooltips to be added to the DOM. Parses and injects type
@@ -14,15 +14,15 @@ const observer = new MutationObserver((mutations) => {
 
       const element = addedNode as Element;
 
-      if (element.id !== PokemonShowdown.TOOLTIP_CONTAINER_ID) continue;
+      if (element.id !== pokemonShowdown.TOOLTIP_CONTAINER_ID) continue;
 
       const tooltipElement = document.querySelector(
-        PokemonShowdown.POKEMON_TOOLTIP_SELECTOR
+        pokemonShowdown.POKEMON_TOOLTIP_SELECTOR
       ) as HTMLElement;
 
       if (tooltipElement === null) continue;
 
-      PokemonShowdown.modifyTooltip(pokeAPIClient, tooltipElement);
+      pokemonShowdown.modifyTooltip(tooltipElement);
     }
   }
 });
