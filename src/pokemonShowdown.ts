@@ -47,9 +47,21 @@ export class PokemonShowdown {
     const images = Array.from(
       tooltipElement.querySelectorAll("img")
     ) as HTMLImageElement[];
-    return images
+
+    let e = images
       .filter((image) => image.getAttribute("width") === "32")
-      .map((image) => image.getAttribute("alt")!.toLowerCase());
+      .map((image) => image.getAttribute("alt")!.toLowerCase())
+
+    let tera = Array.from(tooltipElement.querySelectorAll("small"))
+      .filter((e) => e.innerHTML.startsWith("(Tera Type:") || e.innerHTML.startsWith("(base:"))
+      .filter((e) => e.children.length != 0)
+
+    for (let i = tera[0].children.length; i > 0; i--) {
+      e.pop()
+    }
+    
+    return e
+  
   }
 
   /**
