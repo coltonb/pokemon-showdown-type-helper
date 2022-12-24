@@ -56,6 +56,7 @@ export class PokemonShowdown {
       .filter((e) => e.innerHTML.startsWith("(Tera Type:") || e.innerHTML.startsWith("(base:"))
       .filter((e) => e.children.length != 0)
 
+    if (tera.length > 0)
     for (let i = tera[0].children.length; i > 0; i--) {
       e.pop()
     }
