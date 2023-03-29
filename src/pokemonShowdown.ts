@@ -4,10 +4,9 @@ export class PokemonShowdown {
   TYPE_IMAGE_WIDTH = 32;
   TYPE_IMAGE_HEIGHT = 14;
   TOOLTIP_CONTAINER_ID = "tooltipwrapper";
-  POKEMON_TOOLTIP_SELECTOR =
-    ".tooltip-pokemon, .tooltip-activepokemon";
+  POKEMON_TOOLTIP_SELECTOR = ".tooltip-pokemon, .tooltip-activepokemon";
 
-  pokeAPI: PokeAPI.PokeAPIClient
+  pokeAPI: PokeAPI.PokeAPIClient;
 
   constructor(pokeAPI: PokeAPI.PokeAPIClient) {
     this.pokeAPI = pokeAPI;
@@ -44,11 +43,14 @@ export class PokemonShowdown {
    * @returns The list of types found in the tooltip element.
    */
   getTypes(tooltipElement: Element): string[] {
-    const images = Array.from(
-      tooltipElement.querySelectorAll("img")
-    ) as HTMLImageElement[];
-    return images
-      .filter((image) => image.getAttribute("width") === "32")
+    return (
+      Array.from(tooltipElement.querySelectorAll("img")) as HTMLImageElement[]
+    )
+      .filter(
+        (image) =>
+          image.getAttribute("width") === "32" &&
+          image.parentElement?.parentElement?.parentElement === tooltipElement
+      )
       .map((image) => image.getAttribute("alt")!.toLowerCase());
   }
 
@@ -56,9 +58,7 @@ export class PokemonShowdown {
    * Injects the type damage relations into the passed tooltip element.
    * @param tooltipElement
    */
-  async modifyTooltip(
-    tooltipElement: HTMLElement
-  ) {
+  async modifyTooltip(tooltipElement: HTMLElement) {
     const headerNode = tooltipElement.querySelector("h2");
 
     if (headerNode === null || headerNode.parentNode === null) {
@@ -69,9 +69,7 @@ export class PokemonShowdown {
     }
 
     const types = this.getTypes(tooltipElement);
-    const damageRelations = await this.getDamageRelationsForTypes(
-      types
-    );
+    const damageRelations = await this.getDamageRelationsForTypes(types);
 
     const sortedDamageRelations = Array.from(damageRelations.keys()).sort();
 
@@ -95,57 +93,59 @@ export class PokemonShowdown {
 
     // Remove CSS top property to force tooltips to always render below the mouse
     // This prevents the added types from causing the tooltip to go offscreen.
-    tooltipElement.parentElement!.parentElement!.style.top = "";
+    if (tooltipElement.parentElement?.parentElement) {
+      tooltipElement.parentElement.parentElement.style.top = "";
+    }
   }
 
-  
-/**
- * Calculates the total damage relations for the supplied list of types.
- * @param types
- * @returns A map of each type to the damage relationship multiplier.
- */
-async getDamageRelationsForTypes(
-  types: string[]
-): Promise<Map<number, string[]>> {
-  const damageRelations = (
-    await Promise.all(types.map((type) => this.pokeAPI.getTypeInformation(type)))
-  ).map((type) => type.damage_relations);
+  /**
+   * Calculates the total damage relations for the supplied list of types.
+   * @param types
+   * @returns A map of each type to the damage relationship multiplier.
+   */
+  async getDamageRelationsForTypes(
+    types: string[]
+  ): Promise<Map<number, string[]>> {
+    const damageRelations = (
+      await Promise.all(
+        types.map((type) => this.pokeAPI.getTypeInformation(type))
+      )
+    ).map((type) => type.damage_relations);
 
-  const totalDamageRelations: { [type: string]: number } = {};
+    const totalDamageRelations: { [type: string]: number } = {};
 
-  const damageRelationMap = new Map<keyof PokeAPI.TypeRelations, number>([
-    ["double_damage_from", 2],
-    ["no_damage_from", 0],
-    ["half_damage_from", 0.5],
-  ]);
+    const damageRelationMap = new Map<keyof PokeAPI.TypeRelations, number>([
+      ["double_damage_from", 2],
+      ["no_damage_from", 0],
+      ["half_damage_from", 0.5],
+    ]);
 
-  for (let damageRelation of damageRelations) {
-    for (const [relationName, multiplier] of damageRelationMap) {
-      for (let type of damageRelation[relationName]) {
-        const { name } = type;
-        if (totalDamageRelations[name] === undefined) {
-          totalDamageRelations[name] = multiplier;
-        } else {
-          totalDamageRelations[name] *= multiplier;
+    for (let damageRelation of damageRelations) {
+      for (const [relationName, multiplier] of damageRelationMap) {
+        for (let type of damageRelation[relationName]) {
+          const { name } = type;
+          if (totalDamageRelations[name] === undefined) {
+            totalDamageRelations[name] = multiplier;
+          } else {
+            totalDamageRelations[name] *= multiplier;
+          }
         }
       }
     }
-  }
 
-  const damageRelationsGroupedByMultiplier = new Map<number, string[]>();
+    const damageRelationsGroupedByMultiplier = new Map<number, string[]>();
 
-  for (const [type, multiplier] of Object.entries(totalDamageRelations)) {
-    if (multiplier === 1) {
-      continue;
+    for (const [type, multiplier] of Object.entries(totalDamageRelations)) {
+      if (multiplier === 1) {
+        continue;
+      }
+
+      if (damageRelationsGroupedByMultiplier.get(multiplier) === undefined) {
+        damageRelationsGroupedByMultiplier.set(multiplier, []);
+      }
+      damageRelationsGroupedByMultiplier.get(multiplier)!.push(type);
     }
 
-    if (damageRelationsGroupedByMultiplier.get(multiplier) === undefined) {
-      damageRelationsGroupedByMultiplier.set(multiplier, []);
-    }
-    damageRelationsGroupedByMultiplier.get(multiplier)!.push(type);
+    return damageRelationsGroupedByMultiplier;
   }
-
-  return damageRelationsGroupedByMultiplier;
-}
-
 }
