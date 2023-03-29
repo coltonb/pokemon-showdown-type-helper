@@ -10,12 +10,8 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://play.pokemonshowdown.com/*"
-      ],
-      "js": [
-        "main.js"
-      ]
+      "matches": ["https://play.pokemonshowdown.com/*"],
+      "js": ["main.js"]
     }
   ]
 }
