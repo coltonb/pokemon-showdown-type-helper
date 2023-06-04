@@ -61,9 +61,36 @@ export class PokemonShowdown {
       .map((image) => image.getAttribute("alt")!.toLowerCase());
   }
 
+  /**
+   * Fetches the name of the pokemon from the passed tooltip element.
+   * @param tooltipElement 
+   * @returns The name of the pokemon found in the tooltip element.
+   */
   getPokemonName(tooltipElement: Element): string {
-    const pokemon: string =  (tooltipElement.querySelector("h2") as HTMLImageElement).childNodes[0].nodeValue!.toLowerCase();
-    return pokemon;
+    const elements = tooltipElement.querySelector("h2")?.childNodes;
+    if (elements === undefined) {
+      return '';
+    }
+    if (elements[1].nodeName == 'SMALL') {
+      return this.removeParentheses((elements[1] as HTMLImageElement).childNodes[0].nodeValue!).trim().replace(' ', '-').toLowerCase();
+    }
+    return (tooltipElement.querySelector("h2") as HTMLImageElement).childNodes[0].nodeValue!.trim().replace(' ', '-').toLowerCase();
+  }
+
+  /**
+   * Removes the parentheses from the passed string.
+   * @param str 
+   * @returns The passed string with parentheses removed.
+   */
+  removeParentheses(str: string): string {
+    const firstIndex = str.indexOf('(');
+    const lastIndex = str.lastIndexOf(')');
+    
+    if (firstIndex !== -1 && lastIndex !== -1) {
+      return str.slice(firstIndex + 1, lastIndex);
+    }
+    
+    return str;
   }
 
   /**
@@ -103,16 +130,28 @@ export class PokemonShowdown {
         headerNode.nextSibling
       );
     }
-    const statsElement = document.createElement("p");
-    const statsText = document.createElement("small");
-    statsText.innerText = `Stats: `;
-    statsElement.appendChild(statsText);
 
-    for (let stat of stats.stats) {
+    // Add stats element
+    const statsElement = document.createElement("h2");
+    const statsContent = document.createElement("small");
+    statsContent.innerText = "Stats: ";
+
+    const statsContainer = document.createElement("div");
+    statsContainer.style.display = "grid";
+    statsContainer.style.gridTemplateColumns = "repeat(3, 80px)";
+    statsContainer.style.gap = "0px 0"; // Adjust the vertical gap between rows
+    
+    for (const stat of stats.stats) {
       const statElement = document.createElement("span");
       statElement.innerText = `${this.STAT_MAP[stat.name]}: ${stat.base_stat} `;
-      statsElement.appendChild(statElement);
+      statElement.style.padding = "3px";
+      statElement.style.fontSize = "10px";
+      statElement.style.textAlign = "left";
+      statsContainer.appendChild(statElement);
     }
+
+    statsContent.appendChild(statsContainer);
+    statsElement.appendChild(statsContent);
 
     headerNode.parentNode.insertBefore(
       statsElement,

@@ -17,7 +17,6 @@ export namespace PokeAPI {
      * @returns The Pokemon's stats
      */
     async getPokemonStats(pokemon: string): Promise<PokemonStats> {
-      console.log('fetching pokemon', pokemon);
       const data = await this.get(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
       if (data) {
         return {
@@ -38,12 +37,13 @@ export namespace PokeAPI {
 
     private async get(url: string) {
       if (this.cache[url] === undefined) {
-        const response = await axios.get(url);
-        if (response.status !== 200) {
-          console.error('failed to fetch', url, response.status, response.statusText)
+        try{
+          const response = await axios.get(url);
+          this.cache[url] = response.data;
+        } catch (e) {
+          console.error('failed to fetch', url, e)
           return null;
         }
-        this.cache[url] = response.data;
       }
       return this.cache[url];
     }
