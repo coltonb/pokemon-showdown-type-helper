@@ -5,7 +5,14 @@ export class PokemonShowdown {
   TYPE_IMAGE_HEIGHT = 14;
   TOOLTIP_CONTAINER_ID = "tooltipwrapper";
   POKEMON_TOOLTIP_SELECTOR = ".tooltip-pokemon, .tooltip-activepokemon";
-
+  STAT_MAP: { [key: string]: string;} = {
+    hp: "HP",
+    attack: "Atk",
+    defense: "Def",
+    "special-attack": "SpA",
+    "special-defense": "SpD",
+    speed: "Spe",
+  }
   pokeAPI: PokeAPI.PokeAPIClient;
 
   constructor(pokeAPI: PokeAPI.PokeAPIClient) {
@@ -54,6 +61,11 @@ export class PokemonShowdown {
       .map((image) => image.getAttribute("alt")!.toLowerCase());
   }
 
+  getPokemonName(tooltipElement: Element): string {
+    const pokemon: string =  (tooltipElement.querySelector("h2") as HTMLImageElement).childNodes[0].nodeValue!.toLowerCase();
+    return pokemon;
+  }
+
   /**
    * Injects the type damage relations into the passed tooltip element.
    * @param tooltipElement
@@ -69,8 +81,9 @@ export class PokemonShowdown {
     }
 
     const types = this.getTypes(tooltipElement);
+    const pokemon = this.getPokemonName(tooltipElement);
     const damageRelations = await this.getDamageRelationsForTypes(types);
-
+    const stats = await this.pokeAPI.getPokemonStats(pokemon);
     const sortedDamageRelations = Array.from(damageRelations.keys()).sort();
 
     for (const damageMultiplier of sortedDamageRelations) {
@@ -90,6 +103,21 @@ export class PokemonShowdown {
         headerNode.nextSibling
       );
     }
+    const statsElement = document.createElement("p");
+    const statsText = document.createElement("small");
+    statsText.innerText = `Stats: `;
+    statsElement.appendChild(statsText);
+
+    for (let stat of stats.stats) {
+      const statElement = document.createElement("span");
+      statElement.innerText = `${this.STAT_MAP[stat.name]}: ${stat.base_stat} `;
+      statsElement.appendChild(statElement);
+    }
+
+    headerNode.parentNode.insertBefore(
+      statsElement,
+      headerNode.nextSibling
+    )
 
     // Remove CSS top property to force tooltips to always render below the mouse
     // This prevents the added types from causing the tooltip to go offscreen.
