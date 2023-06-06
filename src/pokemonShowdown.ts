@@ -109,6 +109,11 @@ export class PokemonShowdown {
     }
   }
 
+  /**
+   * Injects the pokemon's damage relations into the passed tooltip element.
+   * @param tooltipElement
+   * @returns 
+   */
   async injectDamageRelations(tooltipElement: HTMLElement) {
     const headerNode = tooltipElement.querySelector("h2");
 
@@ -142,6 +147,11 @@ export class PokemonShowdown {
     }
   }
 
+  /**
+   * Injects the pokemon's stats into the passed tooltip element.
+   * @param tooltipElement
+   * @returns 
+   */
   async injectStats(tooltipElement: HTMLElement) {
     const headerNode = tooltipElement.querySelector("h2");
 
