@@ -1,7 +1,6 @@
-import { PokeAPI } from "./pokeAPI";
 import { PokemonShowdown } from "./pokemonShowdown";
 
-const pokemonShowdown = new PokemonShowdown(new PokeAPI.PokeAPIClient());
+const pokemonShowdown = new PokemonShowdown();
 
 /**
  * Watches for new tooltips to be added to the DOM. Parses and injects type

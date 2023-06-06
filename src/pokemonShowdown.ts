@@ -1,22 +1,22 @@
-import { PokeAPI } from "./pokeAPI";
+import Pokedex from "pokedex-promise-v2";
 
 export class PokemonShowdown {
   TYPE_IMAGE_WIDTH = 32;
   TYPE_IMAGE_HEIGHT = 14;
   TOOLTIP_CONTAINER_ID = "tooltipwrapper";
   POKEMON_TOOLTIP_SELECTOR = ".tooltip-pokemon, .tooltip-activepokemon";
-  STAT_MAP: { [key: string]: string;} = {
+  STAT_MAP: { [key: string]: string } = {
     hp: "HP",
     attack: "Atk",
     defense: "Def",
     "special-attack": "SpA",
     "special-defense": "SpD",
     speed: "Spe",
-  }
-  pokeAPI: PokeAPI.PokeAPIClient;
+  };
+  pokeAPI: Pokedex;
 
-  constructor(pokeAPI: PokeAPI.PokeAPIClient) {
-    this.pokeAPI = pokeAPI;
+  constructor() {
+    this.pokeAPI = new Pokedex();
   }
 
   getTypeImageSrc(type: string) {
@@ -63,33 +63,43 @@ export class PokemonShowdown {
 
   /**
    * Fetches the name of the pokemon from the passed tooltip element.
-   * @param tooltipElement 
+   * @param tooltipElement
    * @returns The name of the pokemon found in the tooltip element.
    */
   getPokemonName(tooltipElement: Element): string {
     const elements = tooltipElement.querySelector("h2")?.childNodes;
     if (elements === undefined) {
-      return '';
+      return "";
     }
-    if (elements[1].nodeName == 'SMALL') {
-      return this.removeParentheses((elements[1] as HTMLImageElement).childNodes[0].nodeValue!).trim().replace(' ', '-').toLowerCase();
+    if (elements[1].nodeName == "SMALL") {
+      return this.removeParentheses(
+        (elements[1] as HTMLImageElement).childNodes[0].nodeValue!
+      )
+        .trim()
+        .replace(" ", "-")
+        .toLowerCase();
     }
-    return (tooltipElement.querySelector("h2") as HTMLImageElement).childNodes[0].nodeValue!.trim().replace(' ', '-').toLowerCase();
+    return (
+      tooltipElement.querySelector("h2") as HTMLImageElement
+    ).childNodes[0]
+      .nodeValue!.trim()
+      .replace(" ", "-")
+      .toLowerCase();
   }
 
   /**
    * Removes the parentheses from the passed string.
-   * @param str 
+   * @param str
    * @returns The passed string with parentheses removed.
    */
   removeParentheses(str: string): string {
-    const firstIndex = str.indexOf('(');
-    const lastIndex = str.lastIndexOf(')');
-    
+    const firstIndex = str.indexOf("(");
+    const lastIndex = str.lastIndexOf(")");
+
     if (firstIndex !== -1 && lastIndex !== -1) {
       return str.slice(firstIndex + 1, lastIndex);
     }
-    
+
     return str;
   }
 
@@ -98,12 +108,17 @@ export class PokemonShowdown {
    * @param tooltipElement
    */
   async modifyTooltip(tooltipElement: HTMLElement) {
-    
+    this.forceTooltipBelowMouse(tooltipElement);
+
     await this.injectDamageRelations(tooltipElement);
     await this.injectStats(tooltipElement);
+  }
 
-    // Remove CSS top property to force tooltips to always render below the mouse
-    // This prevents the added types from causing the tooltip to go offscreen.
+  /**
+   * Removes CSS top property to force tooltips to always render below the mouse
+   * This prevents the added types from causing the tooltip to go offscreen.
+   */
+  forceTooltipBelowMouse(tooltipElement: HTMLElement) {
     if (tooltipElement.parentElement?.parentElement) {
       tooltipElement.parentElement.parentElement.style.top = "";
     }
@@ -112,7 +127,7 @@ export class PokemonShowdown {
   /**
    * Injects the pokemon's damage relations into the passed tooltip element.
    * @param tooltipElement
-   * @returns 
+   * @returns
    */
   async injectDamageRelations(tooltipElement: HTMLElement) {
     const headerNode = tooltipElement.querySelector("h2");
@@ -150,7 +165,7 @@ export class PokemonShowdown {
   /**
    * Injects the pokemon's stats into the passed tooltip element.
    * @param tooltipElement
-   * @returns 
+   * @returns
    */
   async injectStats(tooltipElement: HTMLElement) {
     const headerNode = tooltipElement.querySelector("h2");
@@ -163,27 +178,23 @@ export class PokemonShowdown {
     }
 
     const pokemon = this.getPokemonName(tooltipElement);
-    const stats = await this.pokeAPI.getPokemonStats(pokemon);
-    if (stats === undefined || stats.stats === undefined) {
-      console.log('debug');
-      return;
-    }
+    const stats = await this.pokeAPI.getPokemonByName(pokemon);
+
     // Add stats element
     const statsElement = document.createElement("p");
 
     for (const stat of stats.stats) {
       const statElement = document.createElement("span");
-      statElement.innerText = `${this.STAT_MAP[stat.name]}:${stat.base_stat} `;
+      statElement.innerText = `${this.STAT_MAP[stat.stat.name]}:${
+        stat.base_stat
+      } `;
       statElement.style.fontSize = "10px";
       statElement.style.marginRight = "5px";
       statsElement.appendChild(statElement);
     }
 
     // return statsElement;
-    headerNode.parentNode.insertBefore(
-      statsElement,
-      headerNode.nextSibling
-    )
+    headerNode.parentNode.insertBefore(statsElement, headerNode.nextSibling);
   }
 
   /**
@@ -195,14 +206,15 @@ export class PokemonShowdown {
     types: string[]
   ): Promise<Map<number, string[]>> {
     const damageRelations = (
-      await Promise.all(
-        types.map((type) => this.pokeAPI.getTypeInformation(type))
-      )
+      await Promise.all(types.map((type) => this.pokeAPI.getTypeByName(type)))
     ).map((type) => type.damage_relations);
 
     const totalDamageRelations: { [type: string]: number } = {};
 
-    const damageRelationMap = new Map<keyof PokeAPI.TypeRelations, number>([
+    const damageRelationMap = new Map<
+      keyof Pokedex.TypeDamageRelations,
+      number
+    >([
       ["double_damage_from", 2],
       ["no_damage_from", 0],
       ["half_damage_from", 0.5],

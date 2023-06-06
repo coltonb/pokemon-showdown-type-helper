@@ -22,10 +22,10 @@
   },
   "dependencies": {
     "@types/jest": "^27.4.1",
-    "axios": "^0.27.2",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^10.2.4",
     "html-webpack-plugin": "^5.5.0",
+    "pokedex-promise-v2": "^4.1.1",
     "prettier": "^2.8.7",
     "standard-version": "^9.3.2",
     "ts-jest": "^27.1.3",
