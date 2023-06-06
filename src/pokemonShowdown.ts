@@ -66,41 +66,51 @@ export class PokemonShowdown {
    * @param tooltipElement
    * @returns The name of the pokemon found in the tooltip element.
    */
-  getPokemonName(tooltipElement: Element): string {
-    const elements = tooltipElement.querySelector("h2")?.childNodes;
-    if (elements === undefined) {
-      return "";
+  getPokemonName(tooltipElement: Element): string | undefined {
+    const pokemonNameElement = tooltipElement.querySelector("h2");
+
+    if (!pokemonNameElement) {
+      return undefined;
     }
-    if (elements[1].nodeName == "SMALL") {
-      return this.removeParentheses(
-        (elements[1] as HTMLImageElement).childNodes[0].nodeValue!
-      )
-        .trim()
-        .replace(" ", "-")
-        .toLowerCase();
+
+    const pokemonNameOrNickname =
+      pokemonNameElement.childNodes[0].nodeValue!.trim();
+
+    const realNameElement = pokemonNameElement.querySelector("small");
+
+    if (!realNameElement) {
+      return pokemonNameOrNickname;
     }
-    return (
-      tooltipElement.querySelector("h2") as HTMLImageElement
-    ).childNodes[0]
-      .nodeValue!.trim()
-      .replace(" ", "-")
-      .toLowerCase();
+
+    const realNameRegex = /^\((.+)\)$/;
+    const realNameMatches = realNameElement.innerText.match(realNameRegex);
+
+    if (!realNameMatches) {
+      return pokemonNameOrNickname;
+    }
+
+    return realNameMatches[1];
   }
 
   /**
-   * Removes the parentheses from the passed string.
-   * @param str
-   * @returns The passed string with parentheses removed.
+   * Converts the passed pokemon name into the PokeAPI friendly name.
    */
-  removeParentheses(str: string): string {
-    const firstIndex = str.indexOf("(");
-    const lastIndex = str.lastIndexOf(")");
+  async getPokeAPIName(tooltipElement: Element): Promise<string | undefined> {
+    const pokemonName = this.getPokemonName(tooltipElement)
+      ?.toLowerCase()
+      .replace(" ", "-");
 
-    if (firstIndex !== -1 && lastIndex !== -1) {
-      return str.slice(firstIndex + 1, lastIndex);
+    if (!pokemonName) {
+      return undefined;
     }
 
-    return str;
+    const pokemonListResponse = await this.pokeAPI.getPokemonsList({
+      limit: 999_999,
+    });
+
+    return pokemonListResponse.results.find((result) =>
+      result.name.includes(pokemonName)
+    )?.name;
   }
 
   /**
@@ -177,12 +187,16 @@ export class PokemonShowdown {
       return;
     }
 
-    const pokemon = this.getPokemonName(tooltipElement);
+    const pokemonName = await this.getPokeAPIName(tooltipElement);
+
+    if (!pokemonName) {
+      return;
+    }
 
     let stats;
 
     try {
-      stats = await this.pokeAPI.getPokemonByName(pokemon);
+      stats = await this.pokeAPI.getPokemonByName(pokemonName);
     } catch (error) {
       console.error(`Failed to retrieve Pokemon stats: ${error}`);
       return;
