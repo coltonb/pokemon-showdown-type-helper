@@ -98,6 +98,18 @@ export class PokemonShowdown {
    * @param tooltipElement
    */
   async modifyTooltip(tooltipElement: HTMLElement) {
+    
+    await this.injectDamageRelations(tooltipElement);
+    await this.injectStats(tooltipElement);
+
+    // Remove CSS top property to force tooltips to always render below the mouse
+    // This prevents the added types from causing the tooltip to go offscreen.
+    if (tooltipElement.parentElement?.parentElement) {
+      tooltipElement.parentElement.parentElement.style.top = "";
+    }
+  }
+
+  async injectDamageRelations(tooltipElement: HTMLElement) {
     const headerNode = tooltipElement.querySelector("h2");
 
     if (headerNode === null || headerNode.parentNode === null) {
@@ -108,9 +120,8 @@ export class PokemonShowdown {
     }
 
     const types = this.getTypes(tooltipElement);
-    const pokemon = this.getPokemonName(tooltipElement);
     const damageRelations = await this.getDamageRelationsForTypes(types);
-    const stats = await this.pokeAPI.getPokemonStats(pokemon);
+
     const sortedDamageRelations = Array.from(damageRelations.keys()).sort();
 
     for (const damageMultiplier of sortedDamageRelations) {
@@ -124,45 +135,45 @@ export class PokemonShowdown {
       for (let type of types!) {
         resistanceValueElement.appendChild(this.getTypeImageElement(type));
       }
-
       headerNode.parentNode.insertBefore(
         resistanceValueElement,
         headerNode.nextSibling
       );
     }
+  }
 
-    // Add stats element
-    const statsElement = document.createElement("h2");
-    const statsContent = document.createElement("small");
-    statsContent.innerText = "Stats: ";
+  async injectStats(tooltipElement: HTMLElement) {
+    const headerNode = tooltipElement.querySelector("h2");
 
-    const statsContainer = document.createElement("div");
-    statsContainer.style.display = "grid";
-    statsContainer.style.gridTemplateColumns = "repeat(3, 80px)";
-    statsContainer.style.gap = "0px 0"; // Adjust the vertical gap between rows
-    
-    for (const stat of stats.stats) {
-      const statElement = document.createElement("span");
-      statElement.innerText = `${this.STAT_MAP[stat.name]}: ${stat.base_stat} `;
-      statElement.style.padding = "3px";
-      statElement.style.fontSize = "10px";
-      statElement.style.textAlign = "left";
-      statsContainer.appendChild(statElement);
+    if (headerNode === null || headerNode.parentNode === null) {
+      console.error(
+        "Failed to inject stats information; Showdown update may have broken this."
+      );
+      return;
     }
 
-    statsContent.appendChild(statsContainer);
-    statsElement.appendChild(statsContent);
+    const pokemon = this.getPokemonName(tooltipElement);
+    const stats = await this.pokeAPI.getPokemonStats(pokemon);
+    if (stats === undefined || stats.stats === undefined) {
+      console.log('debug');
+      return;
+    }
+    // Add stats element
+    const statsElement = document.createElement("p");
 
+    for (const stat of stats.stats) {
+      const statElement = document.createElement("span");
+      statElement.innerText = `${this.STAT_MAP[stat.name]}:${stat.base_stat} `;
+      statElement.style.fontSize = "10px";
+      statElement.style.marginRight = "5px";
+      statsElement.appendChild(statElement);
+    }
+
+    // return statsElement;
     headerNode.parentNode.insertBefore(
       statsElement,
       headerNode.nextSibling
     )
-
-    // Remove CSS top property to force tooltips to always render below the mouse
-    // This prevents the added types from causing the tooltip to go offscreen.
-    if (tooltipElement.parentElement?.parentElement) {
-      tooltipElement.parentElement.parentElement.style.top = "";
-    }
   }
 
   /**

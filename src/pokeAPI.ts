@@ -17,8 +17,8 @@ export namespace PokeAPI {
      * @returns The Pokemon's stats
      */
     async getPokemonStats(pokemon: string): Promise<PokemonStats> {
-      const data = await this.get(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
-      if (data) {
+      try {
+        const data = await this.get(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
         return {
           name: data.name,
           stats: data.stats.map((stat: any) => ({
@@ -27,9 +27,9 @@ export namespace PokeAPI {
             effort: stat.effort,
           })),
         };
-      } else {
-        console.log('no data found for', pokemon);
-        throw new Error(`No data found for ${pokemon}`);
+      } catch(e) {
+        console.error(`Failed to get ${pokemon} stats: ${e}`);
+        return {} as PokemonStats;
       }
     }
 
@@ -37,13 +37,8 @@ export namespace PokeAPI {
 
     private async get(url: string) {
       if (this.cache[url] === undefined) {
-        try{
-          const response = await axios.get(url);
-          this.cache[url] = response.data;
-        } catch (e) {
-          console.error('failed to fetch', url, e)
-          return null;
-        }
+        const response = await axios.get(url);
+        this.cache[url] = response.data;
       }
       return this.cache[url];
     }
