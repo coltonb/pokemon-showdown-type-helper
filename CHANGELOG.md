@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/coltonb/pokemon-showdown-type-helper/compare/v0.0.3...v0.0.4) (2023-06-06)
+
+
+### Features
+
+* Pokemon Stat Display ([#4](https://github.com/coltonb/pokemon-showdown-type-helper/issues/4)) ([647f4b1](https://github.com/coltonb/pokemon-showdown-type-helper/commit/647f4b1d209ff95f1946feeea83198d91b6548f4))
+
 ### [0.0.3](https://github.com/coltonb/pokemon-showdown-type-helper/compare/v0.0.2...v0.0.3) (2023-03-29)
 
 
