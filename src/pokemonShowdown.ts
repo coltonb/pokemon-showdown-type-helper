@@ -146,17 +146,17 @@ export class PokemonShowdown {
 
     for (const damageMultiplier of sortedDamageRelations) {
       const types = damageRelations.get(damageMultiplier);
-      const resistanceValueElement = document.createElement("p");
+      const resistanceValueContainer = document.createElement("p");
       const resistanceValueText = document.createElement("small");
 
       resistanceValueText.innerText = `x${damageMultiplier}: `;
 
-      resistanceValueElement.appendChild(resistanceValueText);
+      resistanceValueContainer.appendChild(resistanceValueText);
       for (let type of types!) {
-        resistanceValueElement.appendChild(this.getTypeImageElement(type));
+        resistanceValueContainer.appendChild(this.getTypeImageElement(type));
       }
       headerNode.parentNode.insertBefore(
-        resistanceValueElement,
+        resistanceValueContainer,
         headerNode.nextSibling
       );
     }
@@ -178,7 +178,15 @@ export class PokemonShowdown {
     }
 
     const pokemon = this.getPokemonName(tooltipElement);
-    const stats = await this.pokeAPI.getPokemonByName(pokemon);
+
+    let stats;
+
+    try {
+      stats = await this.pokeAPI.getPokemonByName(pokemon);
+    } catch (error) {
+      console.error(`Failed to retrieve Pokemon stats: ${error}`);
+      return;
+    }
 
     // Add stats element
     const statsElement = document.createElement("p");
