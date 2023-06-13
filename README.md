@@ -2,6 +2,11 @@
 
 Enhances Pokemon Showdown tooltips with additional information, including type weaknesses and stats.
 
+## Screenshots
+
+<img src = "docs/screenshot.1.png" height = 250>
+<img src = "docs/screenshot.2.png" height = 250>
+
 ## Installation
 
 - [Chrome Web Store](https://chrome.google.com/webstore/detail/pokemon-showdown-type-hel/ajhdnfehenofjfbajfdhjoankdheielc)
