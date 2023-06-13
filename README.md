@@ -1,12 +1,11 @@
 # pokemon-showdown-type-helper
 
-A small chrome extension for displaying type weaknesses and resistances in Pokemon Showdown.
+Enhances Pokemon Showdown tooltips with additional information, including type weaknesses and stats.
 
 ## Installation
 
-### Chrome
-
-Install from the [Chrome Web Store](https://chrome.google.com/webstore/detail/pokemon-showdown-type-hel/ajhdnfehenofjfbajfdhjoankdheielc)
+- [Chrome Web Store](https://chrome.google.com/webstore/detail/pokemon-showdown-type-hel/ajhdnfehenofjfbajfdhjoankdheielc)
+- [Add-ons for Firefox](https://addons.mozilla.org/en-US/firefox/addon/pokemon-showdown-type-helper/)
 
 #### Build and Install from Source
 
