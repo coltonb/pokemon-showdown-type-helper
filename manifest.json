@@ -19,5 +19,10 @@
       "matches": ["https://play.pokemonshowdown.com/*"],
       "js": ["main.js"]
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "9959496f-a6b0-4bf4-a77d-0c1697b50f96"
+    }
+  }
 }
