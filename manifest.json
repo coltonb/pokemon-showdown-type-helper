@@ -1,7 +1,7 @@
 {
   "name": "Pokemon Showdown Type Helper",
   "description": "Enhances Pokemon Showdown tooltips with additional information.",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "manifest_version": 3,
   "icons": {
     "16": "icon16.png",
@@ -10,19 +10,27 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["pokemonShowdownTypeHelper.js"],
-      "matches": ["https://play.pokemonshowdown.com/*"]
+      "resources": [
+        "pokemonShowdownTypeHelper.js"
+      ],
+      "matches": [
+        "https://play.pokemonshowdown.com/*"
+      ]
     }
   ],
   "content_scripts": [
     {
-      "matches": ["https://play.pokemonshowdown.com/*"],
-      "js": ["main.js"]
+      "matches": [
+        "https://play.pokemonshowdown.com/*"
+      ],
+      "js": [
+        "main.js"
+      ]
     }
   ],
   "browser_specific_settings": {
     "gecko": {
-      "id": "9959496f-a6b0-4bf4-a77d-0c1697b50f96"
+      "id": "{9959496f-a6b0-4bf4-a77d-0c1697b50f96}"
     }
   }
 }
