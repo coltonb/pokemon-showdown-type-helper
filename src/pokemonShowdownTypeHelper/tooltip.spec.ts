@@ -140,7 +140,7 @@ describe("Tooltip", () => {
 
         expect(damageRelationTextContainer).not.toBeNull();
         expect(damageRelationTextContainer.textContent).toEqual(
-          `x${multiplier}: `
+          `x${multiplier}:`
         );
         expect(damageRelationContainer.children.length).toEqual(
           types.length + 1
