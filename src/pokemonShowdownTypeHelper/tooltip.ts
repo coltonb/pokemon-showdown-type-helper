@@ -5,6 +5,15 @@ declare var Dex: Dex;
 
 export class Tooltip {
   static pokeAPI = new Pokedex();
+  static readonly DATA_ATTRIBUTE = "data-psth-tag";
+  static readonly STAT_NAME_MAP: { [stat: string]: string } = {
+    hp: "HP",
+    atk: "Atk",
+    def: "Def",
+    spa: "SpA",
+    spd: "SpD",
+    spe: "Spe",
+  };
 
   pokemon: Pokemon;
   tooltipContainer: HTMLDivElement;
@@ -44,51 +53,59 @@ export class Tooltip {
    * Injects the pokemon's damage relations into the passed tooltip element.
    */
   private async injectDamageRelations() {
+    const damageRelationsContainer = document.createElement("div");
+    Tooltip.tagElement(damageRelationsContainer, "damage-relations");
+
     const damageRelations = await this.getDamageRelationsGroupedByMultiplier();
     const sortedDamageRelations = Array.from(damageRelations.keys()).sort();
 
     for (const damageMultiplier of sortedDamageRelations) {
       const types = damageRelations.get(damageMultiplier)!;
       const resistanceValueContainer = document.createElement("p");
-      const resistanceValueText = document.createElement("small");
+      Tooltip.tagElement(
+        resistanceValueContainer,
+        `damage-relation-x${damageMultiplier}`
+      );
 
-      resistanceValueText.innerText = `x${damageMultiplier}: `;
+      const resistanceValueText = document.createElement("small");
+      Tooltip.tagElement(resistanceValueText, "damage-relation-text");
+      resistanceValueText.textContent = `x${damageMultiplier}: `;
 
       resistanceValueContainer.appendChild(resistanceValueText);
 
       for (let type of types) {
+        const imageContainer = document.createElement("div");
+        imageContainer.innerHTML = Dex.getTypeIcon(type);
+
+        const image = imageContainer.firstChild! as HTMLImageElement;
+        Tooltip.tagElement(image, type);
+
         resistanceValueContainer.insertAdjacentHTML(
           "beforeend",
-          Dex.getTypeIcon(type)
+          imageContainer.innerHTML
         );
       }
 
-      this.insertElement(resistanceValueContainer);
+      damageRelationsContainer.appendChild(resistanceValueContainer);
     }
+    this.insertElement(damageRelationsContainer);
   }
 
   /**
    * Injects the pokemon's stats into the passed tooltip element.
    */
   private injectStats() {
-    const STAT_MAP: { [stat: string]: string } = {
-      hp: "HP",
-      atk: "Atk",
-      def: "Def",
-      spa: "SpA",
-      spd: "SpD",
-      spe: "Spe",
-    };
-
     const statsElement = document.createElement("p");
+    Tooltip.tagElement(statsElement, "stats");
 
     for (const [name, value] of Object.entries(
       this.pokemon.getSpecies().baseStats
     )) {
       const statElement = document.createElement("span");
-      statElement.innerText = `${STAT_MAP[name]}:${value} `;
+      Tooltip.tagElement(statElement, name);
+      statElement.textContent = `${Tooltip.STAT_NAME_MAP[name]}:${value}`;
       statElement.style.fontSize = "10px";
-      statElement.style.marginRight = "4px";
+      statElement.style.marginRight = "7px";
       statsElement.appendChild(statElement);
     }
 
@@ -148,6 +165,13 @@ export class Tooltip {
     }
 
     return damageRelationsGroupedByMultiplier;
+  }
+
+  /**
+   * Tags an element with a custom data attribute.
+   */
+  private static tagElement(element: HTMLElement, tag: string) {
+    element.setAttribute(Tooltip.DATA_ATTRIBUTE, tag);
   }
 }
 
