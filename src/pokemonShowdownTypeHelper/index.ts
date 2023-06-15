@@ -1,6 +1,7 @@
-declare var BattleTooltips: BattleTooltips;
 import { Tooltip } from "./tooltip";
 import { Logger } from "./logger";
+
+declare var BattleTooltips: BattleTooltips;
 
 class PokemonShowdownMethods {
   static showPokemonTooltip = BattleTooltips.prototype.showPokemonTooltip;

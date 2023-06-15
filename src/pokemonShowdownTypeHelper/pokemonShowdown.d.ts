@@ -13,6 +13,7 @@ interface Species {
 }
 
 class Pokemon {
+  getTypeList(): string[];
   getSpecies(): Species;
   terastallized: string;
 }
@@ -33,4 +34,8 @@ interface BattleTooltips {
       type?: string
     ): boolean | undefined;
   };
+}
+
+interface Dex {
+  getTypeIcon(type: string): string;
 }

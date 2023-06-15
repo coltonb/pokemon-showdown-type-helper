@@ -1,6 +1,8 @@
 import Pokedex from "pokedex-promise-v2";
 import { Logger } from "./logger";
 
+declare var Dex: Dex;
+
 export class Tooltip {
   static pokeAPI = new Pokedex();
 
@@ -46,15 +48,19 @@ export class Tooltip {
     const sortedDamageRelations = Array.from(damageRelations.keys()).sort();
 
     for (const damageMultiplier of sortedDamageRelations) {
-      const types = damageRelations.get(damageMultiplier);
+      const types = damageRelations.get(damageMultiplier)!;
       const resistanceValueContainer = document.createElement("p");
       const resistanceValueText = document.createElement("small");
 
       resistanceValueText.innerText = `x${damageMultiplier}: `;
 
       resistanceValueContainer.appendChild(resistanceValueText);
-      for (let type of types!) {
-        resistanceValueContainer.appendChild(this.createTypeImage(type));
+
+      for (let type of types) {
+        resistanceValueContainer.insertAdjacentHTML(
+          "beforeend",
+          Dex.getTypeIcon(type)
+        );
       }
 
       this.insertElement(resistanceValueContainer);
@@ -96,7 +102,9 @@ export class Tooltip {
   private async getDamageRelationsGroupedByMultiplier(): Promise<TypesGroupedByMultiplier> {
     const damageRelations = (
       await Promise.all(
-        this.pokemonTypes.map((type) => Tooltip.pokeAPI.getTypeByName(type))
+        this.pokemon
+          .getTypeList()
+          .map((type) => Tooltip.pokeAPI.getTypeByName(type.toLowerCase()))
       )
     ).map((type) => type.damage_relations);
 
@@ -140,44 +148,6 @@ export class Tooltip {
     }
 
     return damageRelationsGroupedByMultiplier;
-  }
-
-  private get pokemonTypes() {
-    return this.pokemon.terastallized
-      ? [this.pokemon.terastallized.toLowerCase()]
-      : this.pokemon.getSpecies().types.map((type) => type.toLowerCase());
-  }
-
-  /**
-   * @returns the Pokemon Showdown URL for the type image.
-   */
-  private getTypeImageSrc(type: string): string {
-    return `https://play.pokemonshowdown.com/sprites/types/${type}.png`;
-  }
-
-  /**
-   * @returns An HTML img element for the supplied type.
-   */
-  private createTypeImage(type: string): HTMLImageElement {
-    const TYPE_IMAGE_WIDTH = 32;
-    const TYPE_IMAGE_HEIGHT = 14;
-
-    type = this.formatTypeNameforImage(type);
-
-    const src = this.getTypeImageSrc(type);
-    const image = document.createElement("img");
-
-    image.setAttribute("alt", type);
-    image.setAttribute("src", src);
-    image.setAttribute("width", TYPE_IMAGE_WIDTH.toString());
-    image.setAttribute("height", TYPE_IMAGE_HEIGHT.toString());
-    image.classList.add("pixelated");
-
-    return image;
-  }
-
-  private formatTypeNameforImage(type: string): string {
-    return `${type.charAt(0).toUpperCase()}${type.toLowerCase().slice(1)}`;
   }
 }
 
