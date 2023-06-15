@@ -9,13 +9,11 @@ interface BaseStats {
 
 interface Species {
   baseStats: BaseStats;
-  types: string[];
 }
 
-class Pokemon {
+interface Pokemon {
   getTypeList(): string[];
   getSpecies(): Species;
-  terastallized: string;
 }
 
 interface BattleTooltips {

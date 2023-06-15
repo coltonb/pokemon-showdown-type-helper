@@ -50,9 +50,11 @@ export class Tooltip {
     for (const damageMultiplier of sortedDamageRelations) {
       const types = damageRelations.get(damageMultiplier)!;
       const resistanceValueContainer = document.createElement("p");
-      const resistanceValueText = document.createElement("small");
+      resistanceValueContainer.dataset.jest = `damage-multiplier-${damageMultiplier}`;
 
-      resistanceValueText.innerText = `x${damageMultiplier}: `;
+      const resistanceValueText = document.createElement("small");
+      resistanceValueText.dataset.jest = "multiplier-value-text";
+      resistanceValueText.textContent = `x${damageMultiplier}: `;
 
       resistanceValueContainer.appendChild(resistanceValueText);
 
@@ -81,14 +83,16 @@ export class Tooltip {
     };
 
     const statsElement = document.createElement("p");
+    statsElement.dataset.jest = "stats";
 
     for (const [name, value] of Object.entries(
       this.pokemon.getSpecies().baseStats
     )) {
       const statElement = document.createElement("span");
-      statElement.innerText = `${STAT_MAP[name]}:${value} `;
+      statElement.textContent = `${STAT_MAP[name]}:${value}`;
       statElement.style.fontSize = "10px";
       statElement.style.marginRight = "4px";
+      statElement.dataset.jest = name;
       statsElement.appendChild(statElement);
     }
 
