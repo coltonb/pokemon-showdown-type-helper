@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/coltonb/pokemon-showdown-type-helper/compare/v0.0.5...v0.0.6) (2023-06-15)
+
+
+### Bug Fixes
+
+* Damage relation ordering and styling ([63664a2](https://github.com/coltonb/pokemon-showdown-type-helper/commit/63664a2d634dd3376de3ee371adcf2c657caa8a7))
+
 ### [0.0.5](https://github.com/coltonb/pokemon-showdown-type-helper/compare/v0.0.4...v0.0.5) (2023-06-13)
 
 
