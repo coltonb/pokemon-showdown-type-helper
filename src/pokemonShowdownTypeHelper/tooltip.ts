@@ -57,7 +57,9 @@ export class Tooltip {
     Tooltip.tagElement(damageRelationsContainer, "damage-relations");
 
     const damageRelations = await this.getDamageRelationsGroupedByMultiplier();
-    const sortedDamageRelations = Array.from(damageRelations.keys()).sort();
+    const sortedDamageRelations = Array.from(damageRelations.keys()).sort(
+      (a, b) => b - a
+    );
 
     for (const damageMultiplier of sortedDamageRelations) {
       const types = damageRelations.get(damageMultiplier)!;
@@ -66,10 +68,13 @@ export class Tooltip {
         resistanceValueContainer,
         `damage-relation-x${damageMultiplier}`
       );
+      resistanceValueContainer.style.display = "flex";
+      resistanceValueContainer.style.alignItems = "center";
 
       const resistanceValueText = document.createElement("small");
       Tooltip.tagElement(resistanceValueText, "damage-relation-text");
-      resistanceValueText.textContent = `x${damageMultiplier}: `;
+      resistanceValueText.style.marginRight = "1ch";
+      resistanceValueText.textContent = `x${damageMultiplier}:`;
 
       resistanceValueContainer.appendChild(resistanceValueText);
 
@@ -97,6 +102,7 @@ export class Tooltip {
   private injectStats() {
     const statsElement = document.createElement("p");
     Tooltip.tagElement(statsElement, "stats");
+    statsElement.style.fontSize = "10px";
 
     for (const [name, value] of Object.entries(
       this.pokemon.getSpecies().baseStats
@@ -104,8 +110,7 @@ export class Tooltip {
       const statElement = document.createElement("span");
       Tooltip.tagElement(statElement, name);
       statElement.textContent = `${Tooltip.STAT_NAME_MAP[name]}:${value}`;
-      statElement.style.fontSize = "10px";
-      statElement.style.marginRight = "7px";
+      statElement.style.marginRight = `1.25ch`;
       statsElement.appendChild(statElement);
     }
 
