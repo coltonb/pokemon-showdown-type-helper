@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.7](https://github.com/coltonb/pokemon-showdown-type-helper/compare/v0.0.6...v0.0.7) (2023-06-16)
+
+
+### Bug Fixes
+
+* Benched pokemon tooltips not displaying ([#8](https://github.com/coltonb/pokemon-showdown-type-helper/issues/8)) ([d8b49c4](https://github.com/coltonb/pokemon-showdown-type-helper/commit/d8b49c49c581ee26e655184e8645ad976bfa2ca0))
+
 ### [0.0.6](https://github.com/coltonb/pokemon-showdown-type-helper/compare/v0.0.5...v0.0.6) (2023-06-15)
 
 

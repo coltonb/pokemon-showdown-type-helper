@@ -1,7 +1,7 @@
 {
   "name": "Pokemon Showdown Type Helper",
   "description": "Enhances Pokemon Showdown tooltips with additional information, including type weaknesses and stats.",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "manifest_version": 3,
   "icons": {
     "16": "icon16.png",
