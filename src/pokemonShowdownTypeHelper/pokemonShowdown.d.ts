@@ -20,7 +20,7 @@ interface BattleTooltips {
   prototype: {
     showPokemonTooltip(
       clientPokemon: Pokemon | null,
-      serverPokemon: Pokemon | null,
+      serverPokemon: Object | null,
       isActive?: boolean,
       illusionIndex?: number
     ): string;

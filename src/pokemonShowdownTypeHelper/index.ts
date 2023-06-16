@@ -17,7 +17,7 @@ class PokemonShowdownTypeHelper {
      */
     static async showPokemonTooltip(
       clientPokemon: Pokemon | null,
-      serverPokemon: Pokemon | null,
+      serverPokemon: Object | null,
       ...args: any[]
     ): Promise<string> {
       const tooltipHTML = PokemonShowdownMethods.showPokemonTooltip.call(
@@ -27,13 +27,11 @@ class PokemonShowdownTypeHelper {
         ...args
       );
 
-      const pokemon = clientPokemon || serverPokemon;
-
-      if (!pokemon) {
+      if (!clientPokemon) {
         return tooltipHTML;
       }
 
-      const tooltip = new Tooltip(pokemon, tooltipHTML);
+      const tooltip = new Tooltip(clientPokemon, tooltipHTML);
 
       await tooltip.enhance();
 
