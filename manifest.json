@@ -24,7 +24,7 @@
         "https://play.pokemonshowdown.com/*"
       ],
       "js": [
-        "main.js"
+        "injector.js"
       ]
     }
   ],

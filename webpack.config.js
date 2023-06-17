@@ -6,7 +6,7 @@ module.exports = (mode) => {
     mode: mode,
     devtool: "cheap-module-source-map",
     entry: {
-      main: "./src/main.js",
+      injector: "./src/injector.js",
       pokemonShowdownTypeHelper: "./src/pokemonShowdownTypeHelper",
     },
     module: {

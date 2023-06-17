@@ -1,4 +1,4 @@
-import { Tooltip } from "./tooltip";
+import enhancePokemonTooltip from "./enhancePokemonTooltip";
 import { Logger } from "./logger";
 
 declare var BattleTooltips: BattleTooltips;
@@ -31,11 +31,7 @@ class PokemonShowdownTypeHelper {
         return tooltipHTML;
       }
 
-      const tooltip = new Tooltip(clientPokemon, tooltipHTML);
-
-      await tooltip.enhance();
-
-      return tooltip.innerHTML;
+      return await enhancePokemonTooltip(tooltipHTML, clientPokemon);
     }
 
     /**

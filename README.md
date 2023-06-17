@@ -18,7 +18,7 @@ Enhances Pokemon Showdown tooltips with additional information, including type w
 
 ```bash
 npm install
-npm build
+npm run build
 # Unpacked extension is output to dist/
 ```
 
