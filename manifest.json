@@ -1,21 +1,36 @@
 {
   "name": "Pokemon Showdown Type Helper",
-  "description": "Displays type weaknesses and resistances in Pokemon Showdown tooltips.",
-  "version": "0.0.2",
+  "description": "Enhances Pokemon Showdown tooltips with additional information, including type weaknesses and stats.",
+  "version": "0.0.7",
   "manifest_version": 3,
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
     "128": "icon128.png"
   },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "pokemonShowdownTypeHelper.js"
+      ],
+      "matches": [
+        "https://play.pokemonshowdown.com/*"
+      ]
+    }
+  ],
   "content_scripts": [
     {
       "matches": [
         "https://play.pokemonshowdown.com/*"
       ],
       "js": [
-        "main.js"
+        "injector.js"
       ]
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{9959496f-a6b0-4bf4-a77d-0c1697b50f96}"
+    }
+  }
 }
