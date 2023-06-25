@@ -14,14 +14,14 @@
         "pokemonShowdownTypeHelper.js"
       ],
       "matches": [
-        "https://play.pokemonshowdown.com/*"
+        "https://play.pokemonshowdown.com/*", "https://*.psim.us/*"
       ]
     }
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://play.pokemonshowdown.com/*"
+        "https://play.pokemonshowdown.com/*", "https://*.psim.us/*"
       ],
       "js": [
         "injector.js"
