@@ -4,10 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.0.8](https://github.com/coltonb/pokemon-showdown-type-helper/compare/v0.0.7...v0.0.8) (2023-06-29)
 
-
 ### Bug Fixes
 
-* ([#9](https://github.com/coltonb/pokemon-showdown-type-helper/issues/9)) Add support for PS side servers ([7abb837](https://github.com/coltonb/pokemon-showdown-type-helper/commit/7abb837085fc84902aadd394c92beec9ba4c8752))
+- ([#9](https://github.com/coltonb/pokemon-showdown-type-helper/issues/9)) Add support for PS side servers ([7abb837](https://github.com/coltonb/pokemon-showdown-type-helper/commit/7abb837085fc84902aadd394c92beec9ba4c8752))
 
 ### [0.0.7](https://github.com/coltonb/pokemon-showdown-type-helper/compare/v0.0.6...v0.0.7) (2023-06-16)
 

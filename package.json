@@ -40,7 +40,7 @@
   },
   "standard-version": {
     "scripts": {
-      "prerelease": "npm run format"
+      "precommit": "npm run format >/dev/null"
     }
   }
 }

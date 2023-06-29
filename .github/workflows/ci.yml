@@ -1,4 +1,8 @@
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 name: Main
 
@@ -16,10 +20,11 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
-      - name: Zip distribution
-        id: zip_dist
-        if: startsWith(github.ref, 'refs/tags/')
-        run: pushd dist; zip -r pokemon-showdown-type-helper.zip *; popd
+      - name: Archive build
+        uses: actions/upload-artifact@v3
+        with:
+          name: pokemon-showdown-type-helper
+          path: dist
       - name: Create Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
