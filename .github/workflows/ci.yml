@@ -1,4 +1,4 @@
-on: push
+on: [push, pull_request]
 
 name: Main
 
@@ -13,6 +13,7 @@ jobs:
         with:
           cache: "npm"
       - run: npm ci
+      - run: npm run lint
       - run: npm test
       - run: npm run build
       - name: Zip distribution
