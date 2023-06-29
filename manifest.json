@@ -10,24 +10,14 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [
-        "pokemonShowdownTypeHelper.js"
-      ],
-      "matches": [
-        "https://play.pokemonshowdown.com/*",
-        "https://*.psim.us/*"
-      ]
+      "resources": ["pokemonShowdownTypeHelper.js"],
+      "matches": ["https://play.pokemonshowdown.com/*", "https://*.psim.us/*"]
     }
   ],
   "content_scripts": [
     {
-      "matches": [
-        "https://play.pokemonshowdown.com/*",
-        "https://*.psim.us/*"
-      ],
-      "js": [
-        "injector.js"
-      ]
+      "matches": ["https://play.pokemonshowdown.com/*", "https://*.psim.us/*"],
+      "js": ["injector.js"]
     }
   ],
   "browser_specific_settings": {

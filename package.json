@@ -18,7 +18,8 @@
     "build": "webpack --config webpack.config.js --mode=production",
     "test": "jest",
     "release": "standard-version",
-    "format": "prettier -w ."
+    "format": "prettier -w .",
+    "lint": "prettier -c ."
   },
   "dependencies": {
     "nano-jsx": "^0.0.37",
@@ -39,7 +40,7 @@
   },
   "standard-version": {
     "scripts": {
-      "prerelease": "npm run format"
+      "precommit": "npm run format >/dev/null"
     }
   }
 }
