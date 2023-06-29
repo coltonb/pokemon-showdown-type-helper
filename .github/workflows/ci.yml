@@ -4,10 +4,10 @@ on:
       - main
   pull_request:
 
-name: Main
+name: CI
 
 jobs:
-  main:
+  Build and Test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,8 +25,15 @@ jobs:
         with:
           name: pokemon-showdown-type-helper
           path: dist
+  Release:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v3
+        with:
+          name: pokemon-showdown-type-helper
       - name: Create Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: dist/pokemon-showdown-type-helper.zip
+          files: pokemon-showdown-type-helper.zip
