@@ -51,6 +51,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: pokemon-showdown-type-helper
+          path: pokemon-showdown-type-helper.zip
       - run: ls
       # - name: Create Release
       #   uses: softprops/action-gh-release@v1
