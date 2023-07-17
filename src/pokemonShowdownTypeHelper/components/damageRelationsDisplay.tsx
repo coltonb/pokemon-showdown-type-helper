@@ -11,7 +11,9 @@ export default class DamageRelationsDisplay extends Component {
   }
 
   getTypeImage(type: string) {
-    return jsx([Dex.getTypeIcon(type)] as any);
+    const element = jsx([Dex.getTypeIcon(type)] as any);
+    element.style = "vertical-align: text-bottom;";
+    return element;
   }
 
   render() {
@@ -19,13 +21,10 @@ export default class DamageRelationsDisplay extends Component {
       <div data-psth-tag="damage-relations">
         {this.damageRelations.map(([multiplier, types]) => {
           return (
-            <p
-              data-psth-tag={`damage-relation-x${multiplier}`}
-              style={{ display: "flex", alignItems: "center" }}
-            >
+            <p data-psth-tag={`damage-relation-x${multiplier}`}>
               <small
                 data-psth-tag="damage-relation-text"
-                style={{ marginRight: "1ch" }}
+                style={{ marginRight: "0.5ch" }}
               >
                 x{multiplier}:
               </small>
